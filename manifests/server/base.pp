@@ -8,4 +8,8 @@ class rsyslog::server::base inherits rsyslog::base {
                     "puppet://$server/rsyslog/server/config/rsyslog.conf"],
     }
 
+    include logrotate
+    logrotate::snippet{'rsyslog-remote':
+        source => "puppet:://$server/rsyslog/logrotate/server/rsyslog-remote",
+    }
 }
