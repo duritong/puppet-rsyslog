@@ -31,12 +31,12 @@ class rsyslog::base {
         require => Package['rsyslog'],
     }
     file{'/etc/rsyslog.conf':
-        source => [ "puppet://$server/files/rsyslog/config/${fqdn}/rsyslog.conf",
-                    "puppet://$server/files/rsyslog/config/${domain}/rsyslog.conf",
-                    "puppet://$server/files/rsyslog/config/${operatingsystem}/rsyslog.conf",
-                    "puppet://$server/files/rsyslog/config/rsyslog.conf",
-                    "puppet://$server/rsyslog/config/${operatingsystem}/rsyslog.conf",
-                    "puppet://$server/rsyslog/config/rsyslog.conf"],
+        source => [ "puppet:///modules/site-rsyslog/config/${fqdn}/rsyslog.conf",
+                    "puppet:///modules/site-rsyslog/config/${domain}/rsyslog.conf",
+                    "puppet:///modules/site-rsyslog/config/${operatingsystem}/rsyslog.conf",
+                    "puppet:///modules/site-rsyslog/config/rsyslog.conf",
+                    "puppet:///modules/rsyslog/config/${operatingsystem}/rsyslog.conf",
+                    "puppet:///modules/rsyslog/config/rsyslog.conf"],
         notify => Service['rsyslog'],
         require => Package['rsyslog'],
         owner => root, group => 0, mode => 0644;
@@ -46,11 +46,11 @@ class rsyslog::base {
 
 class rsyslog::centos inherits rsyslog::base {
     file{'/etc/sysconfig/rsyslog':
-        source => [ "puppet://$server/files/rsyslog/config/CentOS/${fqdn}/rsyslog",
-                    "puppet://$server/files/rsyslog/config/CentOS/rsyslog.${lsbdistrelease}",
-                    "puppet://$server/files/rsyslog/config/CentOS/rsyslog",
-                    "puppet://$server/rsyslog/config/CentOS/rsyslog.${lsbdistrelease}",
-                    "puppet://$server/rsyslog/config/CentOS/rsyslog" ],
+        source => [ "puppet:///modules/site-rsyslog/config/CentOS/${fqdn}/rsyslog",
+                    "puppet:///modules/site-rsyslog/config/CentOS/rsyslog.${lsbdistrelease}",
+                    "puppet:///modules/site-rsyslog/config/CentOS/rsyslog",
+                    "puppet:///modules/rsyslog/config/CentOS/rsyslog.${lsbdistrelease}",
+                    "puppet:///modules/rsyslog/config/CentOS/rsyslog" ],
         notify => Service['rsyslog'],
         owner => root, group => 0, mode => 0644;
     }
