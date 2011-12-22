@@ -1,6 +1,4 @@
 class rsyslog::base {
-    include syslog::disable
-
     package{'rsyslog':
         ensure => present,
     }
