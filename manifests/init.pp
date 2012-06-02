@@ -12,8 +12,8 @@
 #
 
 class rsyslog {
-    case $operatingsystem {
-        centos: { include rsyslog::base }
-        default: { include rsyslog::centos }
-    }
+  case $::operatingsystem {
+    centos: { include rsyslog::base }
+    default: { include rsyslog::centos }
+  }
 }
