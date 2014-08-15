@@ -13,7 +13,7 @@ class rsyslog::base {
                 "puppet:///modules/site_rsyslog/config/${::domain}/rsyslog.conf",
                 "puppet:///modules/site_rsyslog/config/${::operatingsystem}/rsyslog.conf",
                 "puppet:///modules/site_rsyslog/config/rsyslog.conf",
-                "puppet:///modules/rsyslog/config/${::operatingsystem}.${::lsbmajdistrelease}/rsyslog.conf",
+                "puppet:///modules/rsyslog/config/${::operatingsystem}.${::operatingsystemamjrelease}/rsyslog.conf",
                 "puppet:///modules/rsyslog/config/${::operatingsystem}/rsyslog.conf",
                 "puppet:///modules/rsyslog/config/rsyslog.conf"],
       notify => Service['rsyslog'],
