@@ -23,4 +23,13 @@ class rsyslog::base {
       group   => 0,
       mode    => '0644';
   }
+  file{'/etc/rsyslog.d/mmanon.conf':
+    source    => 'puppet:///modules/site_rsyslog/config/mmanon.conf',
+    notify    => Service['rsyslog'],
+    require   => Package['rsyslog'],
+    owner     => root,
+    group     => 0,
+    mode      => '0644',
+  }
+
 }
