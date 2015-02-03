@@ -12,6 +12,11 @@
 #
 
 # manage rsyslog
-class rsyslog {
+class rsyslog(
+  $anonymize = true,
+) {
   include rsyslog::base
+  if $anonymize {
+    include rsyslog::mmanon
+  }
 }
