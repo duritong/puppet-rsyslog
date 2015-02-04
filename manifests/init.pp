@@ -13,7 +13,14 @@
 
 # manage rsyslog
 class rsyslog(
-  $anonymize = true,
+  $anonymize = $::osfamily ? {
+    'Debian'    => false,
+    'RedHat'    => $::operatingsystemmajrelease ? {
+      /^(5|6)$/ => false,
+      default   => true,
+    },
+    default     => true,
+  },
 ) {
   include rsyslog::base
   if $anonymize {
