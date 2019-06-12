@@ -1,26 +1,35 @@
 # manage config snippet
 define rsyslog::confd(
-  Optional[String] $source = undef,
-  Optional[String] $content = undef,
+  Enum['present','absent'] $ensure = 'present',
+  Optional[String]         $source = undef,
+  Optional[String]         $content = undef,
 ) {
-  if !($source or $content) {
+  if ($ensure == 'present') and !($source or $content) {
     fail("Requires either source or content")
   }
   include ::rsyslog
   file{"/etc/rsyslog.d/${name}.conf":
     require => Package['rsyslog'],
     notify  => Service['rsyslog'],
-    owner   => root,
-    group   => 0,
-    mode    => '0640',
   }
-  if $source {
+  if $ensure == 'present' {
     File["/etc/rsyslog.d/${name}.conf"]{
-      source => $source,
+      owner   => root,
+      group   => 0,
+      mode    => '0640',
+    }
+    if $source {
+      File["/etc/rsyslog.d/${name}.conf"]{
+        source => $source,
+      }
+    } else {
+      File["/etc/rsyslog.d/${name}.conf"]{
+        content => $content,
+      }
     }
   } else {
     File["/etc/rsyslog.d/${name}.conf"]{
-      content => $content,
+      ensure => 'absent',
     }
   }
 }
