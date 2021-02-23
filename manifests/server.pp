@@ -1,3 +1,4 @@
+# deploy a simple tls enabled relp server
 class rsyslog::server (
   Sensitive[String] $private_key,
   String $cert,
