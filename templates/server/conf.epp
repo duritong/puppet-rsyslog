@@ -3,7 +3,7 @@
 module(load="imrelp" ruleset="relp")
 input(type="imrelp" port="20514"
   tls="on"
-  tls.caCert="/etc/pki/rsyslog/server-ca.pem"
+  tls.caCert="/etc/pki/rsyslog/ca-server.pem"
   tls.myCert="/etc/pki/rsyslog/server.pem"
   tls.myPrivKey="/etc/pki/rsyslog/server.key"
   tls.authMode="name"
