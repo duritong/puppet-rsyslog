@@ -33,7 +33,7 @@ class rsyslog::server (
     action  => 'accept',
     comment => 'allow traffic to port 20514',
     proto   => 'tcp',
-    dport   => '20514',
+    dport   => 20514,
     before  => Service['rsyslog'],
   }
 }
