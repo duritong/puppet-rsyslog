@@ -1,0 +1,16 @@
+<% | Array[String,1] $permitted_peers,
+| -%>
+module(load="imrelp" ruleset="relp")
+input(type="imrelp" port="20514"
+  tls="on"
+  tls.caCert="/etc/pki/rsyslog/server-ca.pem"
+  tls.myCert="/etc/pki/rsyslog/server.pem"
+  tls.myPrivKey="/etc/pki/rsyslog/server.key"
+  tls.authMode="name"
+  tls.permittedpeer=["<%= $permitted_peers.join('","') %>"]
+)
+template (name="RemoteMessages" type="string" string="/var/log/remote/%HOSTNAME%/messages")
+ruleset (name="relp") {
+  action(type="omfile" dynaFile="RemoteMessages")
+  stop
+}
