@@ -9,8 +9,8 @@ class rsyslog::server (
   $conf_options = {
     permitted_peers => $permitted_peers,
   }
-  ensure_packages(['rsyslog-gnutls'])
-  package { ['rsyslog-relp','rsyslog-mmjsonparse','rsyslog-mmaudit',
+  ensure_packages(['rsyslog-gnutls','rsyslog-relp'])
+  package { ['rsyslog-mmjsonparse','rsyslog-mmaudit',
     'rsyslog-mmnormalize']:
       ensure  => installed,
       require => Package['rsyslog-gnutls'],
