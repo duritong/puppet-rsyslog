@@ -6,7 +6,7 @@ module(load="omrelp")
 template(
   name="LongTagForwardFormat"
   type="string"
-  string="<%PRI%>%TIMESTAMP:::date-rfc3339% %HOSTNAME% %syslogtag%%$.suffix%%msg:::sp-if-no-1st-sp%%msg%"
+  string="<%%PRI%>%TIMESTAMP:::date-rfc3339% %HOSTNAME% %syslogtag%%$.suffix%%msg:::sp-if-no-1st-sp%%msg%"
 )
 
 ruleset(name="sendToLogserver") {
