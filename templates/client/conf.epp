@@ -1,0 +1,44 @@
+<% | Stdlib::Fqdn $log_server,
+| -%>
+# https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
+module(load="omrelp")
+
+template(
+  name="LongTagForwardFormat"
+  type="string"
+  string="<%PRI%>%TIMESTAMP:::date-rfc3339% %HOSTNAME% %syslogtag%%$.suffix%%msg:::sp-if-no-1st-sp%%msg%"
+)
+
+ruleset(name="sendToLogserver") {
+  # Queue: http://www.rsyslog.com/doc/v8-stable/concepts/queues.html#disk-assisted-memory-queues
+  # Disk-Assisted Memory Queue: queue.type="LinkedList" + queue.filename
+  # queue.size - max elements in memory
+  # queue.highwatermark - when to start saving to disk
+  # queue.lowwatermark - when to stop saving to disk
+  # queue.saveonshutdown - save on disk between rsyslog shutdown
+  # action.resumeRetryCount - number of retries for action, -1 = eternal
+  # action.resumeInterval - interval to suspend action if destination can not be connected
+  # After each 10 retries, the interval is extended: (numRetries / 10 + 1) * Action.ResumeInterval
+  action(
+    type="omrelp"
+    target="<%= $server_name %>"
+    port="20514"
+    tls="on"
+    tls.caCert="/etc/pki/rsyslog/ca-client.pem"
+    tls.myCert="/etc/pki/rsyslog/client.pem"
+    tls.myPrivKey="/etc/pki/rsyslog/client.key"
+    tls.authmode="name"
+    tls.permittedpeer=["<%= $server_name %>"]
+    queue.type="LinkedList"
+    queue.size="10000"
+    queue.filename="q_sendToLogserver"
+    queue.highwatermark="9000"
+    queue.lowwatermark="50"
+    queue.maxdiskspace="500m"
+    queue.saveonshutdown="on"
+    action.resumeRetryCount="-1"
+    action.reportSuspension="on"
+    action.reportSuspensionContinuation="on"
+    action.resumeInterval="10"
+  )
+}

@@ -1,6 +1,7 @@
 <% | Array[String,1] $permitted_peers,
 | -%>
-module(load="imrelp" ruleset="relp")
+# https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
+module(load="imrelp" ruleset="RemoteLogProcess")
 input(type="imrelp" port="20514"
   tls="on"
   tls.caCert="/etc/pki/rsyslog/ca-server.pem"
@@ -9,8 +10,62 @@ input(type="imrelp" port="20514"
   tls.authMode="name"
   tls.permittedpeer=["<%= $permitted_peers.join('","') %>"]
 )
-template (name="RemoteMessages" type="string" string="/var/log/remote/%HOSTNAME%/messages")
-ruleset (name="relp") {
-  action(type="omfile" dynaFile="RemoteMessages")
-  stop
+template(name="RemoteLogSavePath" type="list") {
+    constant(value="/var/log/remote/")
+    property(name="fromhost")
+    constant(value="/")
+    property(name="timegenerated" dateFormat="year")
+    constant(value="-")
+    property(name="timegenerated" dateFormat="month")
+    constant(value="-")
+    property(name="timegenerated" dateFormat="day")
+    constant(value="/")
+    property(name="$.logpath" )
 }
+
+ruleset(name="RemoteLogProcess") {
+  # For facilities local0-7 set log filename from $programname field: replace __ with /
+  # Message has arbitary format, syslog fields are not used
+  if ( $syslogfacility >= 16 ) then
+  {
+      set $.logpath = replace($programname, "__", "/");
+      action(
+        type="omfile"
+        dynaFileCacheSize="1024"
+        dynaFile="RemoteLogSavePath"
+        template="OnlyMsg"
+        flushOnTXEnd="off"
+        asyncWriting="on"
+        flushInterval="1"
+        ioBufferSize="64k"
+      )
+
+  # Logs with filename defined from facility
+  # Message has syslog format, syslog fields are used
+  } else {
+      if (($syslogfacility == 0)) then {
+        set $.logpath = "kern";
+      } else if (($syslogfacility == 4) or ($syslogfacility == 10)) then {
+          set $.logpath = "auth";
+      } else if (($syslogfacility == 9) or ($syslogfacility == 15)) then {
+          set $.logpath = "cron";
+      } else {
+          set $.logpath ="syslog";
+      }
+      # Built-in template RSYSLOG_FileFormat: High-precision timestamps and timezone information
+      action(
+        type="omfile"
+        dynaFileCacheSize="1024"
+        dynaFile="RemoteLogSavePath"
+        template="RSYSLOG_FileFormat"
+        flushOnTXEnd="off"
+        asyncWriting="on"
+        flushInterval="1"
+        ioBufferSize="64k"
+      )
+}
+
+# http://www.rsyslog.com/doc/v8-stable/configuration/input_directives/rsconf1_escapecontrolcharactersonreceive.html
+# Print recieved LF as-it-is, not like '\n'. For multi-line messages
+# Default: on
+$EscapeControlCharactersOnReceive off
