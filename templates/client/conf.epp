@@ -21,14 +21,14 @@ ruleset(name="sendToLogserver") {
   # After each 10 retries, the interval is extended: (numRetries / 10 + 1) * Action.ResumeInterval
   action(
     type="omrelp"
-    target="<%= $server_name %>"
+    target="<%= $log_server %>"
     port="20514"
     tls="on"
     tls.caCert="/etc/pki/rsyslog/ca-client.pem"
     tls.myCert="/etc/pki/rsyslog/client.pem"
     tls.myPrivKey="/etc/pki/rsyslog/client.key"
     tls.authmode="name"
-    tls.permittedpeer=["<%= $server_name %>"]
+    tls.permittedpeer=["<%= $log_server %>"]
     queue.type="LinkedList"
     queue.size="10000"
     queue.filename="q_sendToLogserver"
