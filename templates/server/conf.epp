@@ -22,47 +22,48 @@ template(name="RemoteLogSavePath" type="list") {
     constant(value="/")
     property(name="$.logpath" )
 }
+template(name="OnlyMsg" type="string" string="%msg:::drop-last-lf%\n")
 
 ruleset(name="RemoteLogProcess") {
   # For facilities local0-7 set log filename from $programname field: replace __ with /
   # Message has arbitary format, syslog fields are not used
-  if ( $syslogfacility >= 16 ) then
-  {
-      set $.logpath = replace($programname, "__", "/");
-      action(
-        type="omfile"
-        dynaFileCacheSize="1024"
-        dynaFile="RemoteLogSavePath"
-        template="OnlyMsg"
-        flushOnTXEnd="off"
-        asyncWriting="on"
-        flushInterval="1"
-        ioBufferSize="64k"
-      )
+  if ( $syslogfacility >= 16 ) then {
+    set $.logpath = replace($programname, "__", "/");
+    action(
+      type="omfile"
+      dynaFileCacheSize="1024"
+      dynaFile="RemoteLogSavePath"
+      template="OnlyMsg"
+      flushOnTXEnd="off"
+      asyncWriting="on"
+      flushInterval="1"
+      ioBufferSize="64k"
+    )
 
   # Logs with filename defined from facility
   # Message has syslog format, syslog fields are used
   } else {
-      if (($syslogfacility == 0)) then {
-        set $.logpath = "kern";
-      } else if (($syslogfacility == 4) or ($syslogfacility == 10)) then {
-          set $.logpath = "auth";
-      } else if (($syslogfacility == 9) or ($syslogfacility == 15)) then {
-          set $.logpath = "cron";
-      } else {
-          set $.logpath ="syslog";
-      }
-      # Built-in template RSYSLOG_FileFormat: High-precision timestamps and timezone information
-      action(
-        type="omfile"
-        dynaFileCacheSize="1024"
-        dynaFile="RemoteLogSavePath"
-        template="RSYSLOG_FileFormat"
-        flushOnTXEnd="off"
-        asyncWriting="on"
-        flushInterval="1"
-        ioBufferSize="64k"
-      )
+    if (($syslogfacility == 0)) then {
+      set $.logpath = "kern";
+    } else if (($syslogfacility == 4) or ($syslogfacility == 10)) then {
+        set $.logpath = "auth";
+    } else if (($syslogfacility == 9) or ($syslogfacility == 15)) then {
+        set $.logpath = "cron";
+    } else {
+        set $.logpath ="syslog";
+    }
+    # Built-in template RSYSLOG_FileFormat: High-precision timestamps and timezone information
+    action(
+      type="omfile"
+      dynaFileCacheSize="1024"
+      dynaFile="RemoteLogSavePath"
+      template="RSYSLOG_FileFormat"
+      flushOnTXEnd="off"
+      asyncWriting="on"
+      flushInterval="1"
+      ioBufferSize="64k"
+    )
+  }
 }
 
 # http://www.rsyslog.com/doc/v8-stable/configuration/input_directives/rsconf1_escapecontrolcharactersonreceive.html
