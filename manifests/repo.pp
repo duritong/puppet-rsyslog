@@ -6,7 +6,7 @@ class rsyslog::repo {
     enabled       => 1,
     gpgcheck      => 1,
     priority      => 1,
-    repo_gpgcheck => 1,
+    #repo_gpgcheck => 1, https://github.com/rsyslog/rsyslog-pkg-rhel-centos/issues/95
     protect       => 1,
     gpgkey_source => 'puppet:///modules/rsyslog/RPM-GPG-KEY-Adiscon',
     gpgkeyid      => 'E00B8985',
