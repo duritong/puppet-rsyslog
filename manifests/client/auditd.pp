@@ -12,11 +12,11 @@ class rsyslog::client::auditd {
     default:
       path => $audit_syslog_file;
     'auditd_syslog_active':
-      line    => 'active = yes',
-      pattern => '^active';
+      line  => 'active = yes',
+      match => '^active';
     'auditd_syslog_args':
-      line    => 'args = LOG_INFO LOG_LOCAL3',
-      pattern => '^args';
+      line  => 'args = LOG_INFO LOG_LOCAL3',
+      match => '^args';
   } ~> exec { 'reload_auditd':
     # https://access.redhat.com/solutions/2664811
     command     => 'service auditd restart',
