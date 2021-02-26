@@ -9,9 +9,12 @@ class rsyslog::server (
   $conf_options = {
     permitted_peers => $permitted_peers,
   }
+  class { 'rsyslog::repo':
+    stage => 'yum',
+  }
   ensure_packages(['rsyslog-gnutls','rsyslog-relp'])
   package { ['rsyslog-mmjsonparse','rsyslog-mmaudit',
-    'rsyslog-mmnormalize']:
+    'rsyslog-mmnormalize','rsyslog-mmrm1stspace']:
       ensure  => installed,
       require => Package['rsyslog-gnutls'],
   } -> file {

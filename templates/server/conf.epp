@@ -24,6 +24,14 @@ template(name="RemoteLogSavePath" type="list") {
 }
 template(name="OnlyMsg" type="string" string="%msg:::drop-last-lf%\n")
 
+# Module to remove 1st space from message
+module(load="mmrm1stspace")
+
+# http://www.rsyslog.com/doc/v8-stable/configuration/input_directives/rsconf1_escapecontrolcharactersonreceive.html
+# Print recieved LF as-it-is, not like '\n'. For multi-line messages
+# Default: on
+$EscapeControlCharactersOnReceive off
+
 ruleset(name="RemoteLogProcess") {
   # For facilities local0-7 set log filename from $programname field: replace __ with /
   # Message has arbitary format, syslog fields are not used
@@ -65,8 +73,3 @@ ruleset(name="RemoteLogProcess") {
     )
   }
 }
-
-# http://www.rsyslog.com/doc/v8-stable/configuration/input_directives/rsconf1_escapecontrolcharactersonreceive.html
-# Print recieved LF as-it-is, not like '\n'. For multi-line messages
-# Default: on
-$EscapeControlCharactersOnReceive off

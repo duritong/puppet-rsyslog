@@ -35,6 +35,7 @@ class rsyslog::client (
       }
     }
   }
+  include rsyslog::client::auditd
   class { 'firewall::rules::out::rsyslog':
     server => resolv($log_server),
   }
