@@ -36,6 +36,9 @@ ruleset(name="RemoteLogProcess") {
   # For facilities local0-7 set log filename from $programname field: replace __ with /
   # Message has arbitary format, syslog fields are not used
   if ( $syslogfacility >= 16 ) then {
+    # Remove 1st space from message. Syslog protocol legacy
+    action(type="mmrm1stspace")
+
     set $.logpath = replace($programname, "__", "/");
     action(
       type="omfile"
