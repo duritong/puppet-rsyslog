@@ -4,7 +4,10 @@ class rsyslog::client (
   String $cert,
   String $ca,
   Stdlib::Fqdn $log_server,
-  Rsyslog::Forwards $forwards = { 'auth' => {} },
+  Rsyslog::Forwards $forwards = {
+    'auth' => {},
+    'kernel' => {},
+  },
 ) {
   include rsyslog
   $conf_options = {
