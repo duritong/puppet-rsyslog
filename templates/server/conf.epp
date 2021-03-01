@@ -12,6 +12,8 @@ input(type="imrelp" port="20514"
 )
 template(name="RemoteLogSavePath" type="list") {
     constant(value="/var/log/remote/")
+    property(name="hostname")
+    constant(value="-")
     property(name="fromhost")
     constant(value="/")
     property(name="timegenerated" dateFormat="year")
