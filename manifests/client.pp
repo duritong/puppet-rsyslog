@@ -4,6 +4,7 @@ class rsyslog::client (
   String $cert,
   String $ca,
   Stdlib::Fqdn $log_server,
+  Optional[Variant[Stdlib::IP::Address::V4::Nosubnet,Stdlib::IP::Address::V6::Nosubnet]] $localclientip = undef,
   Rsyslog::Forwards $forwards = {
     'auth' => {},
     'kernel' => {},
@@ -11,7 +12,8 @@ class rsyslog::client (
 ) {
   include rsyslog
   $conf_options = {
-    log_server => $log_server,
+    log_server    => $log_server,
+    localclientip => $localclientip,
   }
   ensure_packages(['rsyslog-gnutls','rsyslog-relp'])
   file {

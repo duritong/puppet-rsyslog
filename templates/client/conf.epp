@@ -1,4 +1,5 @@
 <% | Stdlib::Fqdn $log_server,
+     Optional[Variant[Stdlib::IP::Address::V4::Nosubnet,Stdlib::IP::Address::V6::Nosubnet]] $localclientip = undef,
 | -%>
 # https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
 module(load="omrelp")
@@ -23,6 +24,9 @@ ruleset(name="sendToLogserver") {
     type="omrelp"
     target="<%= $log_server %>"
     port="20514"
+<% if $localclientip -%>
+    localclientip="<%= $localclientip %>"
+<% end -%>
     tls="on"
     tls.caCert="/etc/pki/rsyslog/ca-client.pem"
     tls.myCert="/etc/pki/rsyslog/client.pem"
