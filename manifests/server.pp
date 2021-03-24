@@ -4,6 +4,7 @@ class rsyslog::server (
   String $cert,
   String $ca,
   Array[String,1] $permitted_peers = ["*.${facts['networking']['domain']}"],
+  Struct[{ on_calendar => Optional[String], randomize_delay_sec => Optional[String] }] $compress_timer = {},
 ) {
   include rsyslog
   $conf_options = {
@@ -39,5 +40,17 @@ class rsyslog::server (
     proto   => 'tcp',
     dport   => 20514,
     before  => Service['rsyslog'],
+  }
+  file { '/usr/local/sbin/rsyslog-compress-remote.sh':
+    source  => 'puppet:///modules/rsyslog/server/rsyslog-compress-remote.sh',
+    owner   => root,
+    group   => 0,
+    mode    => '0750',
+    require => Service['rsyslog'],
+  } -> systemd::timer { 'rsyslog-compress-remotes.timer':
+    timer_content   => epp('rsyslog/server/compress.timer.epp', $compress_timer),
+    service_content => epp('rsyslog/server/compress.service.epp'),
+    active          => true,
+    enable          => true,
   }
 }

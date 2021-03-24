@@ -1,0 +1,20 @@
+[Unit]
+Description=Compress remote logs
+
+[Service]
+Type=oneshot
+
+SyslogIdentifier=cron-rsyslog-compress-remote
+
+ExecStart=/usr/local/sbin/rsyslog-compress-remote.sh
+
+# security settings
+PrivateTmp=true
+ProtectSystem=strict
+PrivateUsers=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=yes
+
+ReadOnlyDirectories=/
+ReadWriteDirectories=/var/log/remote/
