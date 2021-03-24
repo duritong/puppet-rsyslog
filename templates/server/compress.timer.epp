@@ -2,7 +2,7 @@
       String $randomize_delay_sec = '4h',
 | -%>
 [Timer]
-OnCalendar=<%= $on_calendar %h
+OnCalendar=<%= $on_calendar %>
 <% if $randomize_delay_sec { -%>
 RandomizedDelaySec=<%= $randomize_delay_sec %>
 <% } -%>
