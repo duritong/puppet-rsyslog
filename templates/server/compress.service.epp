@@ -5,6 +5,7 @@ Description=Compress remote logs
 Type=oneshot
 
 SyslogIdentifier=cron-rsyslog-compress-remote
+OnFailure=status_email_root@%n.service
 
 ExecStart=/usr/local/sbin/rsyslog-compress-remote.sh
 
