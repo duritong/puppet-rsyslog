@@ -78,8 +78,10 @@ $prognames_to_log.keys.each |$index,$p| {
 -%>
     <%= $prefix %>if ($programname contains "<%= $p %>") then {
         set $.logpath = "<%= $prognames_to_log[$p] %>";
-<% } -%>
+<% }
+if $last_index >= 0 { -%>
     }
+<% } -%>
     # Built-in template RSYSLOG_FileFormat: High-precision timestamps and timezone information
     action(
       type="omfile"
