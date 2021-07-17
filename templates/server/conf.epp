@@ -1,5 +1,5 @@
 <% | Array[String,1] $permitted_peers,
-     Hash[String[1],String[1]] $$prognames_to_log = {},
+     Hash[String[1],String[1]] $prognames_to_log = {},
 | -%>
 # https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
 module(load="imrelp" ruleset="RemoteLogProcess")
