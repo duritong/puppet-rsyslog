@@ -10,7 +10,7 @@ class rsyslog::server (
   include rsyslog
   $conf_options = {
     permitted_peers  => $permitted_peers,
-    prognames_to_log => $prognames_to_iog,
+    prognames_to_log => $prognames_to_log,
   }
   class { 'rsyslog::repo':
     stage => 'yum',
