@@ -5,10 +5,12 @@ class rsyslog::server (
   String $ca,
   Array[String,1] $permitted_peers = ["*.${facts['networking']['domain']}"],
   Struct[{ on_calendar => Optional[String], randomize_delay_sec => Optional[String] }] $compress_timer = {},
+  Hash[String[1], String[1]] $prognames_to_log = {}
 ) {
   include rsyslog
   $conf_options = {
-    permitted_peers => $permitted_peers,
+    permitted_peers  => $permitted_peers,
+    prognames_to_log => $prognames_to_iog,
   }
   class { 'rsyslog::repo':
     stage => 'yum',

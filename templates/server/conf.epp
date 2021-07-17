@@ -1,4 +1,5 @@
 <% | Array[String,1] $permitted_peers,
+     Hash[String[1],String[1]] $$prognames_to_log = {},
 | -%>
 # https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
 module(load="imrelp" ruleset="RemoteLogProcess")
@@ -58,7 +59,7 @@ ruleset(name="RemoteLogProcess") {
   } else {
     if (($syslogfacility == 0)) then {
       set $.logpath = "kern";
-    } else if ($syslogfacility == 3) then {
+    } else if (($syslogfacility == 3)) then {
         set $.logpath = "mail";
     } else if (($syslogfacility == 4) or ($syslogfacility == 10)) then {
         set $.logpath = "auth";
@@ -66,6 +67,18 @@ ruleset(name="RemoteLogProcess") {
         set $.logpath = "cron";
     } else {
         set $.logpath ="syslog";
+    }
+<% $last_index = $prognames_to_log.keys.length - 1
+$prognames_to_log.keys.each |$index,$p| {
+  if $index == 0 {
+    $prefix = ''
+  } else {
+    $prefix = '} else '
+  }
+-%>
+    <%= $prefix %>if ($programname contains "<%= $p %>") then {
+        set $.logpath = "<%= $prognames_to_log[$p] %>";
+<% } -%>
     }
     # Built-in template RSYSLOG_FileFormat: High-precision timestamps and timezone information
     action(
