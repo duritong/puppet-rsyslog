@@ -1,0 +1,5 @@
+<% | String $unit_name,
+| -%>
+if ( $programname == "<%= $unit_name %>" or $!_SYSTEMD_UNIT == "<%= $unit_name %>.service" ) then {
+  call sendToLogserver
+}
