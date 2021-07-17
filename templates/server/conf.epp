@@ -58,6 +58,8 @@ ruleset(name="RemoteLogProcess") {
   } else {
     if (($syslogfacility == 0)) then {
       set $.logpath = "kern";
+    } else if ($syslogfacility == 3) then {
+        set $.logpath = "mail";
     } else if (($syslogfacility == 4) or ($syslogfacility == 10)) then {
         set $.logpath = "auth";
     } else if (($syslogfacility == 9) or ($syslogfacility == 15)) then {
