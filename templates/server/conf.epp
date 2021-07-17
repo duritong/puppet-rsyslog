@@ -69,7 +69,7 @@ ruleset(name="RemoteLogProcess") {
         set $.logpath ="syslog";
     }
 <% $last_index = $prognames_to_log.keys.length - 1
-$prognames_to_log.keys.each |$index,$p| {
+$prognames_to_log.keys.sort.each |$index,$p| {
   if $index == 0 {
     $prefix = ''
   } else {
