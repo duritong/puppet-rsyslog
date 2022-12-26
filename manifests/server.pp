@@ -8,16 +8,27 @@ class rsyslog::server (
   Hash[String[1], String[1]] $prognames_to_log = {}
 ) {
   include rsyslog
+  if versioncmp($facts['os']['release']['major'],'9') < 0 {
+    class { 'rsyslog::repo':
+      stage => 'yum',
+    }
+    $with_mmrm1stspace = true
+    package {'rsyslog-mmrm1stspace':
+      ensure  => present,
+      require => Package['rsyslog-gnutls'],
+      before  => Package['rsyslog-mmjsonparse'],
+    }
+  } else {
+    $with_mmrm1stspace = false
+  }
   $conf_options = {
     permitted_peers  => $permitted_peers,
     prognames_to_log => $prognames_to_log,
-  }
-  class { 'rsyslog::repo':
-    stage => 'yum',
+    mmrm1stspace     => $with_mmrm1stspace,
   }
   ensure_packages(['rsyslog-gnutls','rsyslog-relp'])
   package { ['rsyslog-mmjsonparse','rsyslog-mmaudit',
-    'rsyslog-mmnormalize','rsyslog-mmrm1stspace']:
+    'rsyslog-mmnormalize']:
       ensure  => installed,
       require => Package['rsyslog-gnutls'],
   } -> file {

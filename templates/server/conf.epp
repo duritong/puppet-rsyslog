@@ -1,5 +1,6 @@
 <% | Array[String,1] $permitted_peers,
      Hash[String[1],String[1]] $prognames_to_log = {},
+     Boolean $mmrm1stspace = false,
 | -%>
 # https://selivan.github.io/2017/02/07/rsyslog-log-forward-save-filename-handle-multi-line-failover.html
 module(load="imrelp" ruleset="RemoteLogProcess")
@@ -27,8 +28,10 @@ template(name="RemoteLogSavePath" type="list") {
 }
 template(name="OnlyMsg" type="string" string="%msg:::drop-last-lf%\n")
 
+<% if $mmrm1stspace { -%>
 # Module to remove 1st space from message
 module(load="mmrm1stspace")
+<% } -%>
 
 # http://www.rsyslog.com/doc/v8-stable/configuration/input_directives/rsconf1_escapecontrolcharactersonreceive.html
 # Print recieved LF as-it-is, not like '\n'. For multi-line messages
@@ -39,8 +42,10 @@ ruleset(name="RemoteLogProcess") {
   # For facilities local0-7 set log filename from $programname field: replace __ with /
   # Message has arbitary format, syslog fields are not used
   if ( $syslogfacility >= 16 ) then {
+<% if $mmrm1stspace { -%>
     # Remove 1st space from message. Syslog protocol legacy
     action(type="mmrm1stspace")
+<% } -%>
 
     set $.logpath = replace($programname, "__", "/");
     action(
