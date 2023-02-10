@@ -18,4 +18,10 @@ class rsyslog::base {
     enable    => true,
     hasstatus => true,
   }
+
+  if versioncmp($facts['os']['releas']['major'],'8') > 0 {
+    package{'rsyslog-logrotate':
+      ensure => present,
+    }
+  }
 }
